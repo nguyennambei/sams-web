@@ -1,25 +1,44 @@
 import React from 'react';
-import logo from './logo.svg';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
+import {BrowserRouter as Router, Switch, Route, NavLink} from 'react-router-dom'
+import Attendance from './components/AttendancePage/Attendance';
+import Students from './components/studentsPage/Students';
 
+const routes = [
+  {path:"/",exact:true,main:()=><Attendance />},
+  {path:"/students",exact:true,main:()=><Students />}
+];
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <div className="d-flex">
+        <div className="w-auto p-2 bg-primary vh-100">
+          <ul className="list-group list-group-flush">
+            <li className="list-group-item">
+              <NavLink to="/" exact activeClassName="sidebar-item-active">Attendance</NavLink>
+            </li>
+            <li className="list-group-item">
+            <NavLink to="/students" exact activeClassName="sidebar-item-active">Students</NavLink>
+            </li>
+            <li className="list-group-item"></li>
+          </ul>
+        </div>
+
+        <div className="p-4" style={{flex:1}}>
+          <Switch>
+            {routes.map((route,index)=>(
+              <Route 
+                key={index}
+                path={route.path}
+                exact={route.exact}
+                children={<route.main />}
+              />
+            ))}
+          </Switch>
+        </div>
+      </div>
+    </Router>
   );
 }
 
