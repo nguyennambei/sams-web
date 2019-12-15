@@ -13,7 +13,7 @@ function App() {
   return (
     <Router>
       <div className="d-flex">
-        <div className="w-auto p-2 bg-primary vh-100">
+        <div className="p-2 bg-primary vh-100">
           <ul className="list-group list-group-flush">
             <li className="list-group-item">
               <NavLink to="/" exact activeClassName="sidebar-item-active">Attendance</NavLink>
@@ -25,7 +25,7 @@ function App() {
           </ul>
         </div>
 
-        <div className="p-4" style={{flex:1}}>
+        <div className="p-4" style={{flex:1,height:"100vh",overflow:'auto'}}>
           <Switch>
             {routes.map((route,index)=>(
               <Route 

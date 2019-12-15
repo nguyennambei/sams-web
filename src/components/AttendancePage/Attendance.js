@@ -36,17 +36,37 @@ export default class Attendance extends React.Component {
     }
     handleDate = (e) => {
         const date = e.target.value;
-        console.log(date)
         this.setState({date});
+    }
+    checkitem (item){
+        switch (item) {
+            case 0:
+                return "A";
+            case 1:
+                return "B";
+            case 2:
+                return "C";
+            default:
+                return null;
+        }
     }
     render() {
         const {list}=this.state;
         let filterList="";
+        let check = [];
         try{
             filterList = list.filter((item)=>(
-               item.id_student===181001&&item.date==="2019-12-14"
+              item.id_student===181001
             ));
-            console.log(filterList)
+            filterList.forEach((item)=>{
+                if(this.checkitem(item.check1)){check.push(this.checkitem(item.check1))}
+                if(this.checkitem(item.check2)){check.push(this.checkitem(item.check2))}
+                if(this.checkitem(item.check3)){check.push(this.checkitem(item.check3))}
+                if(this.checkitem(item.check4)){check.push(this.checkitem(item.check4))}
+            });
+            console.log(check)
+            var iru=check.filter((item)=>(item==="A"));
+            console.log(iru.length)
         }catch(e){
             
         }
