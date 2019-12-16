@@ -6,7 +6,25 @@ export default class Attendance extends React.Component {
     constructor(props){
         super(props);
         this.state={
-            date: this.getNowDate()
+            date: this.getNowDate(),
+            list:[
+                {
+                    id:2018,
+                    active:true,
+                    studentlist:{
+                        181001:{id:181001,name:"A"},
+                        181002:{id:181002,name:"B"},
+                    }
+                },
+                {
+                    id:2019,
+                    active:true,
+                    studentlist:{
+                        191001:{id:191001,name:"A"},
+                        191002:{id:191002,name:"B"},
+                    }
+                }
+            ]
         };
         this.database = firebaseApp.database().ref('attendance_data')
         
@@ -38,38 +56,11 @@ export default class Attendance extends React.Component {
         const date = e.target.value;
         this.setState({date});
     }
-    checkitem (item){
-        switch (item) {
-            case 0:
-                return "A";
-            case 1:
-                return "B";
-            case 2:
-                return "C";
-            default:
-                return null;
-        }
-    }
     render() {
         const {list}=this.state;
-        let filterList="";
-        let check = [];
-        try{
-            filterList = list.filter((item)=>(
-              item.id_student===181001
-            ));
-            filterList.forEach((item)=>{
-                if(this.checkitem(item.check1)){check.push(this.checkitem(item.check1))}
-                if(this.checkitem(item.check2)){check.push(this.checkitem(item.check2))}
-                if(this.checkitem(item.check3)){check.push(this.checkitem(item.check3))}
-                if(this.checkitem(item.check4)){check.push(this.checkitem(item.check4))}
-            });
-            console.log(check)
-            var iru=check.filter((item)=>(item==="A"));
-            console.log(iru.length)
-        }catch(e){
-            
-        }
+        let date2019 = new Date('2019-04');
+        let datanow = new Date('2019-04');
+        console.log(date2019-datanow)
         return (
             <div>
                 <h1>出席テーブル</h1>
