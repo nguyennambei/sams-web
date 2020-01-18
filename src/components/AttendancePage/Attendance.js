@@ -1,69 +1,80 @@
 import React from 'react';
-import {Button,Card,Table} from 'react-bootstrap';
+import {Button,Card,Table, Badge} from 'react-bootstrap';
 import { firebaseApp } from '../firebaseConfig';
+
+
+function AttendItem({att}){
+    let checkatt = () => {
+        switch (att.check) {
+            case "A":
+                return <Badge variant="primary">出席</Badge>
+            case "B":
+                return <Badge variant="warning">遅刻 {checktimelate()}</Badge>
+            case "C":
+                return <Badge variant="danger">欠席</Badge>
+        }
+    }
+    let checktimelate = () =>{
+        const timelate = new Date(att.timelate);
+        return timelate.getMinutes()+'分'
+    }
+    return(
+        <div>{att.id}限：{checkatt()}</div>
+    );
+}
 
 export default class Attendance extends React.Component {
     constructor(props){
         super(props);
         this.state={
-            date: this.getNowDate(),
-            list:[
-                {
-                    id:2018,
-                    active:true,
-                    studentlist:{
-                        181001:{id:181001,name:"A"},
-                        181002:{id:181002,name:"B"},
-                    }
-                },
-                {
-                    id:2019,
-                    active:true,
-                    studentlist:{
-                        191001:{id:191001,name:"A"},
-                        191002:{id:191002,name:"B"},
-                    }
-                }
-            ]
+            date: this.customDate(new Date()),
+            studentyear:[],
+            yearslt: new Date().getFullYear()-1,
+            dataattend:[]
         };
-        this.database = firebaseApp.database().ref('attendance_data')
+        this.database = firebaseApp.database();
         
     }
-    getNowDate() {
-        const date = new Date();
-            let y = date.getFullYear();
-            let m = (date.getMonth()+1);
-                m = (m<=9) ? '0'+m : m;
-            let d = (date.getDate());
-                d = (d<=9) ? '0'+d : d;
-        return y+"-"+m+"-"+d;
+
+    customDate = (date)=>{
+        let newdate = new Date(date);
+        let m = ((newdate.getMonth()+1)<=9) ? '0'+(newdate.getMonth()+1) : (newdate.getMonth()+1);
+        let d = ((newdate.getDate())<=9) ? '0'+(newdate.getDate()) : (newdate.getDate());
+        return newdate.getFullYear()+"-"+m+"-"+d;
     }
     addData = () => {
-        // this.database.child('2019-12-14').update([
-        //     {id_student:181001,name_student:"Aghedo",date:"2019-12-16",
-        //         check1:0,reason1:null,timelate1:this.getNowDate(),
-        //         check2:1,reason2:3,timelate2:this.getNowDate(),
-        //         check3:0,reason3:null,timelate3:this.getNowDate(),
-        //     },
-        //     {id_student:181002,name_student:"Thien",date:"2019-12-16",
-        //         check1:0,reason1:null,timelate1:this.getNowDate(),
-        //         check2:1,reason2:3,timelate2:this.getNowDate(),
-        //         check3:0,reason3:null,timelate3:this.getNowDate(),
-        //     },
-        // ])
+        this.database.ref('check').update({})
     }
     handleDate = (e) => {
         const date = e.target.value;
         this.setState({date});
     }
+    
+    handleStudentYear = e => {
+        this.setState({yearslt:e.target.value});
+        this.getAttendance(e.target.value);
+    }
+    _filterdate = () =>{
+        
+    }
     render() {
-        const {list}=this.state;
-        let date2019 = new Date('2019-04');
-        let datanow = new Date('2019-04');
-        console.log(date2019-datanow)
+        console.log(this.state.dataattend)
+        const {list, studentyear, yearslt}=this.state;
+        let elmitem=<tr><td colSpan="3">NOT DATA</td></tr>;
+        let elmyear = studentyear.map((item,index)=>{
+            return <option key={index} value={item}>{item}年度</option>
+        })
         return (
             <div>
                 <h1>出席テーブル</h1>
+                <div className="form-group row ">
+                    <label className="col-sm-2 col-form-label">学年</label>
+                    <div className="col-sm-3">
+                        <select className="form-control" value={yearslt} onChange={this.handleStudentYear} >
+                            {elmyear}
+                        </select>
+                    </div>
+                </div>
                 <hr />
                 <div className="container">
                     <Card>
@@ -71,7 +82,7 @@ export default class Attendance extends React.Component {
                             <input  style={{backgroundColor:"#F7F7F7",outline:"none",border:0}} 
                                     type="date"
                                     defaultValue={this.state.date}
-                                    max={this.getNowDate()}
+                                    max={this.customDate(new Date())}
                                     onChange={this.handleDate}
                                     />
                         </Card.Header>
@@ -85,11 +96,7 @@ export default class Attendance extends React.Component {
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                <td>1</td>
-                                <td>Mark</td>
-                                <td>Otto</td>
-                                </tr>
+                                {elmitem}
                             </tbody>
                         </Table>
                         </Card.Body>
@@ -99,14 +106,19 @@ export default class Attendance extends React.Component {
             </div>
         );
     }
+    getAttendance = (year)=>{
+        this.database.ref('attendancedata').child('year'+year).on('value',snaps=>{
+            let dataattend = [];
+            snaps.forEach(item=>{dataattend.push(item.val())});
+            this.setState({dataattend});
+        })
+    }
     componentDidMount(){
-        let list = [];
-        var newlist = this.database;
-        newlist.once('value',snapshot=>{
-            snapshot.forEach((item)=>{
-                list = list.concat(item.val());
-            });
-            this.setState({list})
+        this.database.ref('studentyear').on('value',snaps=>{
+            let year=[];
+            snaps.forEach(item=>{year.push(item.key)})
+            this.setState({studentyear:year.sort().reverse()})
+            this.getAttendance(year.sort().reverse()[0]);
         })
     }
 }

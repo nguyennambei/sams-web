@@ -4,10 +4,14 @@ import './App.css';
 import {BrowserRouter as Router, Switch, Route, NavLink} from 'react-router-dom'
 import Attendance from './components/AttendancePage/Attendance';
 import Students from './components/studentsPage/Students';
+import Subjects from './components/subjectsPage/Subjects';
+import AttendanceRate from './components/AttendanceRatePage/AttendanceRate';
 
 const routes = [
   {path:"/",exact:true,main:()=><Attendance />},
-  {path:"/students",exact:true,main:()=><Students />}
+  {path:"/students",exact:true,main:()=><Students />},
+  {path:"/attendance-rate",exact:true,main:()=><AttendanceRate />},
+  {path:"/subjects",exact:true,main:()=><Subjects />},
 ];
 function App() {
   return (
@@ -19,9 +23,14 @@ function App() {
               <NavLink to="/" exact activeClassName="sidebar-item-active">Attendance</NavLink>
             </li>
             <li className="list-group-item">
-            <NavLink to="/students" exact activeClassName="sidebar-item-active">Students</NavLink>
+              <NavLink to="/students" exact activeClassName="sidebar-item-active">Students</NavLink>
             </li>
-            <li className="list-group-item"></li>
+            <li className="list-group-item">
+              <NavLink to="/attendance-rate" exact activeClassName="sidebar-item-active">出席率</NavLink>
+            </li>
+            <li className="list-group-item">
+              <NavLink to="/subjects" exact activeClassName="sidebar-item-active">科目</NavLink>
+            </li>
           </ul>
         </div>
 
