@@ -58,7 +58,6 @@ export default class Attendance extends React.Component {
         
     }
     render() {
-        console.log(this.state.dataattend)
         const {list, studentyear, yearslt}=this.state;
         let elmitem=<tr><td colSpan="3">NOT DATA</td></tr>;
         let elmyear = studentyear.map((item,index)=>{

@@ -1,9 +1,12 @@
 import React from 'react';
-import {Button} from 'react-bootstrap';
+import {Button, Tabs, Tab} from 'react-bootstrap';
 import { firebaseApp } from '../firebaseConfig';
 import AddSubject from './AddSubject';
 import EditSubject from './EditSubject';
 import DeleteSubject from './DeleteSubject';
+import TableSubmit from './TableSubject';
+import SetSubject from './SetSubject';
+import LessonTable from './LessonTable';
 
 export default class Subjects extends React.Component {
     constructor(props){
@@ -14,6 +17,10 @@ export default class Subjects extends React.Component {
             subjectdata:[]
         }
         this.database = firebaseApp.database();
+    }
+    handleStudentYear = e => {
+        this.setState({yearslt:e.target.value});
+        this.getSubjectData(e.target.value);
     }
     render() {
         const {studentlist,studentyear,yearslt}=this.state;
@@ -62,7 +69,6 @@ export default class Subjects extends React.Component {
                                                 <td>{item.teachername}</td>
                                                 <td className="d-flex">
                                                     <EditSubject subject={item} nendo={yearslt}/>
-                                                    
                                                     <DeleteSubject subject={item} nendo={yearslt}/>
                                                 </td>
                                             </tr>
@@ -74,12 +80,20 @@ export default class Subjects extends React.Component {
                                 </div>
                             </div>
                         </div>
-                        <div className="col-xl-7">
+                        <div className="col-xl-5">
                             <div className="card shadow mb-4">
-                                <div className="card-header py-3">
-                                </div>
+                              <div className="card-header py-3">
 
+                              </div>
+                              <div className="card-body">
+                                <SetSubject nendo={yearslt} subjects = {this.state.subjectdata}/>
+                              </div>
                             </div>
+                        </div>
+                    </div>
+                    <div className="row"> 
+                        <div className="col">
+                            <LessonTable nendo={yearslt}/>
                         </div>
 
                     </div>
