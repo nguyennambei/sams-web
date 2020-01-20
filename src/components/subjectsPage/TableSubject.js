@@ -1,12 +1,9 @@
 import React from 'react';
+import ColSubject from './ColSubject';
 
 export default function TableSubmit ({subjects}) {
-    
     return (
     <div>
-        <h3>
-            2018-04-06 ~ 2018-06-06
-        </h3>
         <table className="table table-bordered">
             <thead>
                 <tr>
@@ -21,59 +18,17 @@ export default function TableSubmit ({subjects}) {
             </thead>
             <tbody>
                 <tr>
-                    <td>
-                        <ColSubject lesson={subjects[1]}/>
-                    </td>
-                    <td>
-                        <p className="badge badge-primary">プログラミング演習</p><br/>
-                        <p className="badge badge-primary">プログラミング演習</p><br/>
-                        <p className="badge badge-primary">プログラミング演習</p><br/>
-                        <p className="badge badge-primary">プログラミング演習</p>
-                    </td>
-                    <td>
-                        <p className="badge badge-primary">プログラミング演習</p><br/>
-                        <p className="badge badge-primary">プログラミング演習</p><br/>
-                        <p className="badge badge-primary">プログラミング演習</p><br/>
-                        <p className="badge badge-primary">プログラミング演習</p>
-                    </td>
-                    <td>
-                        <p className="badge badge-primary">プログラミング演習</p><br/>
-                        <p className="badge badge-primary">プログラミング演習</p><br/>
-                        <p className="badge badge-primary">プログラミング演習</p><br/>
-                        <p className="badge badge-primary">プログラミング演習</p>
-                    </td>
-                    <td>
-                        <p className="badge badge-primary">プログラミング演習</p><br/>
-                        <p className="badge badge-primary">プログラミング演習</p><br/>
-                        <p className="badge badge-primary">プログラミング演習</p><br/>
-                        <p className="badge badge-primary">プログラミング演習</p>
-                    </td>
-                    <td>
-                        <p className="badge badge-primary">プログラミング演習</p><br/>
-                        <p className="badge badge-primary">プログラミング演習</p><br/>
-                        <p className="badge badge-primary">プログラミング演習</p><br/>
-                        <p className="badge badge-primary">プログラミング演習</p>
-                    </td>
-                    <td>
-                        <p className="badge badge-primary">プログラミング演習</p><br/>
-                        <p className="badge badge-primary">プログラミング演習</p><br/>
-                        <p className="badge badge-primary">プログラミング演習</p><br/>
-                        <p className="badge badge-primary">プログラミング演習</p>
-                    </td>
+                    <ColSubject day={subjects[1]}/>
+                    <ColSubject day={subjects[2]}/>
+                    <ColSubject day={subjects[3]}/>
+                    <ColSubject day={subjects[4]}/>
+                    <ColSubject day={subjects[5]}/>
+                    <ColSubject day={subjects[6]}/>
+                    <ColSubject day={subjects[0]}/>
+                    
                 </tr>
             </tbody>
         </table>
     </div>
     );
 }
-
-function ColSubject({lesson}) {
-    // let elmSub =lesson.map((item,index)=>
-    //     <p className="badge badge-primary">{item.name}</p>
-    // )
-    console.log(lesson)
-    return(
-        // {elmSub}
-        <h1>ad</h1>
-    );
-  }

@@ -7,6 +7,7 @@ import DeleteSubject from './DeleteSubject';
 import TableSubmit from './TableSubject';
 import SetSubject from './SetSubject';
 import LessonTable from './LessonTable';
+import SetOneLesson from './SetOneLesson';
 
 export default class Subjects extends React.Component {
     constructor(props){
@@ -14,7 +15,8 @@ export default class Subjects extends React.Component {
         this.state={
             studentyear:[],
             yearslt:0,
-            subjectdata:[]
+            subjectdata:[],
+            lessondata:[]
         }
         this.database = firebaseApp.database();
     }
@@ -87,13 +89,14 @@ export default class Subjects extends React.Component {
                               </div>
                               <div className="card-body">
                                 <SetSubject nendo={yearslt} subjects = {this.state.subjectdata}/>
+                                <SetOneLesson nendo={yearslt} subjects = {this.state.subjectdata} />
                               </div>
                             </div>
                         </div>
                     </div>
                     <div className="row"> 
                         <div className="col">
-                            <LessonTable nendo={yearslt}/>
+                            <LessonTable lessondata={this.state.lessondata} deletefunc = {this.deleteLessonData}/>
                         </div>
 
                     </div>
@@ -102,11 +105,21 @@ export default class Subjects extends React.Component {
             </div>
         )
     }
+    deleteLessonData = (keyId) => {
+        this.database.ref('lessondata').child('year'+this.state.yearslt).child(keyId).remove();
+    }
     getSubjectData = (year) => {
         this.database.ref('subjectdata').child('year'+year).on('value',snaps=>{
             let subjectdata = [];
             snaps.forEach(item=>{subjectdata.push(item.val())});
             this.setState({subjectdata})
+        })
+    }
+    getLessonData = (year)=>{
+        this.database.ref('lessondata').child('year'+year).on('value',snaps=>{
+            let lessons = [];
+            snaps.forEach(item=>{lessons.push(item.val())});
+            this.setState({lessondata:lessons})
         })
     }
     componentDidMount(){
@@ -115,7 +128,7 @@ export default class Subjects extends React.Component {
             snaps.forEach(item=>{year.push(item.key)})
             this.setState({studentyear:year.sort().reverse()})
             this.setState({yearslt:JSON.parse(year.sort().reverse()[0])})
-        }).then(()=>{this.getSubjectData(this.state.yearslt)});
+        }).then(()=>{this.getSubjectData(this.state.yearslt);this.getLessonData(this.state.yearslt)});
 
         
     }
