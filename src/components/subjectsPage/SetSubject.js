@@ -8,13 +8,13 @@ import GenSelection from './GenSelection';
 export default function SetSubject ({nendo,subjects}){
     const [show,setShow] = useState(false);
     const [day, setDay]= useState([
-        {id:0,lesson:[{},{},{},{}]},
-        {id:1,lesson:[{},{},{},{}]},
-        {id:2,lesson:[{},{},{},{}]},
-        {id:3,lesson:[{},{},{},{}]},
-        {id:4,lesson:[{},{},{},{}]},
-        {id:5,lesson:[{},{},{},{}]},
-        {id:6,lesson:[{},{},{},{}]},
+        {id:0,lesson:[{keyID:"",name:"",period:1,teachername:""},{keyID:"",name:"",period:2,teachername:""},{keyID:"",name:"",period:3,teachername:""},{keyID:"",name:"",period:4,teachername:""}]},
+        {id:1,lesson:[{keyID:"",name:"",period:1,teachername:""},{keyID:"",name:"",period:2,teachername:""},{keyID:"",name:"",period:3,teachername:""},{keyID:"",name:"",period:4,teachername:""}]},
+        {id:2,lesson:[{keyID:"",name:"",period:1,teachername:""},{keyID:"",name:"",period:2,teachername:""},{keyID:"",name:"",period:3,teachername:""},{keyID:"",name:"",period:4,teachername:""}]},
+        {id:3,lesson:[{keyID:"",name:"",period:1,teachername:""},{keyID:"",name:"",period:2,teachername:""},{keyID:"",name:"",period:3,teachername:""},{keyID:"",name:"",period:4,teachername:""}]},
+        {id:4,lesson:[{keyID:"",name:"",period:1,teachername:""},{keyID:"",name:"",period:2,teachername:""},{keyID:"",name:"",period:3,teachername:""},{keyID:"",name:"",period:4,teachername:""}]},
+        {id:5,lesson:[{keyID:"",name:"",period:1,teachername:""},{keyID:"",name:"",period:2,teachername:""},{keyID:"",name:"",period:3,teachername:""},{keyID:"",name:"",period:4,teachername:""}]},
+        {id:6,lesson:[{keyID:"",name:"",period:1,teachername:""},{keyID:"",name:"",period:2,teachername:""},{keyID:"",name:"",period:3,teachername:""},{keyID:"",name:"",period:4,teachername:""}]},
     ]);
     const [datestart,setDatestart]=useState('');
     const [dateend,setDateend]=useState('');

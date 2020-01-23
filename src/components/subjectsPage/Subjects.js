@@ -13,21 +13,23 @@ export default class Subjects extends React.Component {
     constructor(props){
         super(props);
         this.state={
-            studentyear:[],
-            yearslt:0,
+            yearlydata:[],
+            yearslt:{},
             subjectdata:[],
             lessondata:[]
         }
         this.database = firebaseApp.database();
     }
     handleStudentYear = e => {
-        this.setState({yearslt:e.target.value});
-        this.getSubjectData(e.target.value);
+        let year = JSON.parse(e.target.value);
+        this.setState({yearslt:year});
+        this.getSubjectData(year.year);
+        this.getLessonData(year.year)
     }
     render() {
-        const {studentlist,studentyear,yearslt}=this.state;
-        let elmyear = studentyear.map((item,index)=>{
-            return <option key={index} value={item}>{item}年度</option>
+        const {yearlydata,yearslt}=this.state;
+        let elmyear = yearlydata.map((item,index)=>{
+            return <option key={index} value={JSON.stringify(item)}>{item.year}年度</option>
         })
         
         return (
@@ -36,7 +38,7 @@ export default class Subjects extends React.Component {
                 <div className="form-group row">
                     <label className="col-sm-2 col-form-label">学年</label>
                     <div className="col-sm-3">
-                        <select className="form-control" defaultValue={yearslt.toString()} onChange={this.handleStudentYear} >
+                        <select className="form-control" defautValue={yearslt.year} onChange={this.handleStudentYear} >
                             {elmyear}
                         </select>
                     </div>
@@ -44,7 +46,12 @@ export default class Subjects extends React.Component {
                 <hr />
 
                 <div className="container-fluid">
-                    
+                    <div className="row"> 
+                        <div className="col">
+                            <LessonTable lessondata={this.state.lessondata} deletefunc = {this.deleteLessonData}/>
+                        </div>
+
+                    </div>
                     <div className="row">
                         <div className="col-xl-5">
                             <div className="card shadow mb-4">
@@ -70,8 +77,8 @@ export default class Subjects extends React.Component {
                                                 <td>{item.name}</td>
                                                 <td>{item.teachername}</td>
                                                 <td className="d-flex">
-                                                    <EditSubject subject={item} nendo={yearslt}/>
-                                                    <DeleteSubject subject={item} nendo={yearslt}/>
+                                                    <EditSubject subject={item} nendo={yearslt.year}/>
+                                                    <DeleteSubject subject={item} nendo={yearslt.year}/>
                                                 </td>
                                             </tr>
                                         )
@@ -88,25 +95,20 @@ export default class Subjects extends React.Component {
 
                               </div>
                               <div className="card-body">
-                                <SetSubject nendo={yearslt} subjects = {this.state.subjectdata}/>
-                                <SetOneLesson nendo={yearslt} subjects = {this.state.subjectdata} />
+                                <SetSubject nendo={yearslt.year} subjects = {this.state.subjectdata}/>
+                                <SetOneLesson nendo={yearslt.year} subjects = {this.state.subjectdata} />
                               </div>
                             </div>
                         </div>
                     </div>
-                    <div className="row"> 
-                        <div className="col">
-                            <LessonTable lessondata={this.state.lessondata} deletefunc = {this.deleteLessonData}/>
-                        </div>
-
-                    </div>
+                    
 
                 </div>
             </div>
         )
     }
     deleteLessonData = (keyId) => {
-        this.database.ref('lessondata').child('year'+this.state.yearslt).child(keyId).remove();
+        this.database.ref('lessondata').child('year'+this.state.yearslt.year).child(keyId).remove();
     }
     getSubjectData = (year) => {
         this.database.ref('subjectdata').child('year'+year).on('value',snaps=>{
@@ -120,15 +122,16 @@ export default class Subjects extends React.Component {
             let lessons = [];
             snaps.forEach(item=>{lessons.push(item.val())});
             this.setState({lessondata:lessons})
+            console.log(lessons)
         })
     }
     componentDidMount(){
-        this.database.ref('studentyear').once('value',snaps=>{
-            let year=[];
-            snaps.forEach(item=>{year.push(item.key)})
-            this.setState({studentyear:year.sort().reverse()})
-            this.setState({yearslt:JSON.parse(year.sort().reverse()[0])})
-        }).then(()=>{this.getSubjectData(this.state.yearslt);this.getLessonData(this.state.yearslt)});
+        this.database.ref('yearlydata').once('value',snaps=>{
+            let years =[]
+            snaps.forEach(item=>{years.push(item.val())})
+            years.sort((x,y)=>(JSON.parse(y.year)-JSON.parse(x.year)));
+            this.setState({yearlydata:years,yearslt:years[0]});
+        }).then(()=>{this.getSubjectData(this.state.yearslt.year);this.getLessonData(this.state.yearslt.year)});
 
         
     }

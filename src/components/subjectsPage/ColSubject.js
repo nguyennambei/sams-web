@@ -8,7 +8,7 @@ export default function ColSubject({day}) {
     try {
         if(day.lesson){
             elmSub = day.lesson.map((item,index)=>
-                <div className="text-center my-2" key={index}>{index+1}限：{item.name}</div>
+                <div className="text-left my-2" key={index}>{index+1}限：{item.name}</div>
             )
         }
         

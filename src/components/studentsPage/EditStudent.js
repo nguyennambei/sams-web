@@ -5,25 +5,40 @@ import { firebaseApp } from '../firebaseConfig';
 export default function EditStudent ({student,nendo}){
 
     const [show,setShow] = useState(false);
-    const [name,setName] = useState('');
-    const [furiname,setFuriname] = useState('');
-    const [callname,setCallname] = useState('');
-    const [studentId,setStudentId] = useState('');
-    const [gender,setGender] = useState('');
-    const [birth,setBirth] = useState('');
-    const [country,setCountry] = useState('');
-    const [phone,setPhone] = useState('');
-    const [address,setAddress] = useState('');
+    const [name,setName] = useState(student.name);
+    const [furiname,setFuriname] = useState(student.furiname);
+    const [callname,setCallname] = useState(student.callname);
+    const [studentId,setStudentId] = useState(student.studentId);
+    const [gender,setGender] = useState(student.gender);
+    const [birth,setBirth] = useState(student.birth);
+    const [country,setCountry] = useState(student.country);
+    const [phone,setPhone] = useState(student.phone);
+    const [address,setAddress] = useState(student.address);
     const [image,setImage] = useState('');
-    const [url,setUrl] = useState('');
-
-
+    const [url,setUrl] = useState(student.imgurl);
+    const keyId = student.keyId;
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 
     const saveData = () => {
        if(image === ''){
-         console.log(name)
+        let student={
+          name:name,
+          furiname:furiname,
+          callname:callname,
+          studentId:studentId,
+          gender:gender,
+          birth:birth,
+          country:country,
+          phone:phone,
+          address:address,
+          imgurl:url,
+          keyId:keyId
+        }
+        let updata ={}
+        updata['studentdata/year'+nendo+'/'+keyId]=student;
+        firebaseApp.database().ref().update(updata);
+        setShow(false)
        } else {
          const uploadTask = firebaseApp.storage().ref(`student${nendo}/${image.name}`).put(image);
          uploadTask.then(
@@ -33,23 +48,21 @@ export default function EditStudent ({student,nendo}){
               .child(image.name)
               .getDownloadURL()
               .then(url=>{
-                setUrl(url);
-                const newKeyId = firebaseApp.database().ref().push().key;
                 let student={
-                  name:name,
-                  furiname:furiname,
-                  callname:callname,
-                  studentId:studentId,
-                  gender:gender,
-                  birth:birth,
-                  country:country,
-                  phone:phone,
-                  address:address,
+                  name:(!name)?name:student.name,
+                  furiname:(!furiname)?furiname:student.furiname,
+                  callname:(!callname)?callname:student.callname,
+                  studentId:(!studentId)?studentId:student.studentId,
+                  gender:(!gender)?gender:student.gender,
+                  birth:(!birth)?birth:student.birth,
+                  country:(!country)?country:student.country,
+                  phone:(!phone)?phone:student.phone,
+                  address:(!address)?address:student.address,
                   imgurl:url,
-                  keyId:newKeyId
+                  keyId:student.keyId
                 }
                 let updata ={}
-                updata['studentdata/year'+nendo+'/'+newKeyId]=student;
+                updata['studentdata/year'+nendo+'/'+student.keyId]=student;
                 firebaseApp.database().ref().update(updata);
                 setShow(false)
               })
@@ -63,13 +76,13 @@ export default function EditStudent ({student,nendo}){
 
         <Modal show={show} onHide={handleClose}>
             <Modal.Header>
-              <h4>{}年度　―　学生追加</h4>
+              <h4>{nendo}年度　―　{student.studentId}</h4>
             </Modal.Header>
             <Modal.Body>
                 <div className="container">
                     <div className="form-group">
                       <label>名前</label>
-                      <input defaultValue={student.name} onChange={(e)=>{setName(e.target.value)}} type="text" className="form-control" placeholder="読売 or YOMIURI" />
+                      <input defaultValue={name} onChange={(e)=>{setName(e.target.value)}} type="text" className="form-control" placeholder="読売 or YOMIURI" />
                     </div>
                     <div className="form-group">
                       <label>フリガナ</label>

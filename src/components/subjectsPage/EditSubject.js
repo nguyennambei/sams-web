@@ -14,8 +14,8 @@ export default function EditSubject ({nendo,subject}) {
         let update={};
         update['/subjectdata/year'+nendo+"/"+keyID]={
             keyID : keyID,
-            name:subjectname,
-            teachername:teachername
+            name:(subjectname==="")?subject.name:subjectname,
+            teachername:(teachername==="")?subject.teachername:teachername
         }
         itemRef.ref().update(update);
         setShow(false)

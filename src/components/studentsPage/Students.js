@@ -6,6 +6,7 @@ import AddStudent from './AddStudent';
 import AddNendo from './AddNendo';
 import StudentList from './StudentList';
 import EditStudent from './EditStudent';
+import DeleteStudent from './DeleteStudent';
 
 export default class Students extends React.Component {
     constructor(props){
@@ -52,7 +53,8 @@ export default class Students extends React.Component {
                                 </ul>
                             </td>
                             <td>
-                                <EditStudent student={item} nendo={yearslt}/>
+                                <EditStudent student={item} nendo={yearslt.year}/>
+                                <DeleteStudent student={item} nendo={yearslt.year}/>
                             </td>
                         </tr>
             })
@@ -114,7 +116,6 @@ export default class Students extends React.Component {
                     studentlist.push(item.val());
                 })
                 this.setState({studentlist});
-                console.log(studentlist)
             });
         })
         
