@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import {Button} from 'react-bootstrap';
+import {Button, Modal} from 'react-bootstrap';
 import StudentInfo from './StudentInfo';
 import { firebaseApp } from '../firebaseConfig';
 import AddStudent from './AddStudent';
@@ -81,6 +81,7 @@ export default class Students extends React.Component {
                     <div className="col-sm-3">
                         <AddStudent nendo={yearslt.year} />
                         <YearlyAction nendo = {yearslt}/>
+                        <YearlyDelete yearly = {yearslt} />
                         {/* <Button variant="info" size="sm">学生追加</Button> */}
                     </div>
                 </div>
@@ -135,5 +136,31 @@ function YearlyAction({nendo}){
         <div style={{'fontSize':"12px"}}>アプリに入り：
         <Button variant={nendo.action?"primary":"outline-primary"} size="sm" onClick={handleChange}> {nendo.action?'ON':'OFF'}</Button>
         </div>
+    );
+}
+function YearlyDelete({yearly}){
+    const [show,setShow] = useState(false);
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
+    const deletedata = () => {
+        firebaseApp.database().ref('yearlydata').child(yearly.keyId).remove();
+        setShow(false)
+    }
+    return(
+        <>
+        <Button variant="outline-danger" size="sm" onClick={handleShow}>削除</Button>
+
+        <Modal show={show} onHide = {handleClose}>
+            <Modal.Body>
+                <div className="container">
+                    <h4>{`${yearly.year}年度のデータを削除しますか？`}</h4>
+                    <div className="form-group row justify-content-center">
+                      <button className="btn btn-danger" onClick={deletedata}>削除</button>
+                      <button className="btn btn-outline-dark mx-3" onClick={handleClose}>キャンセル</button>
+                    </div>
+                </div>
+            </Modal.Body>
+        </Modal>
+        </>
     );
 }

@@ -52,7 +52,7 @@ export default function EditStudent ({student,nendo}){
                   name:(!name)?name:student.name,
                   furiname:(!furiname)?furiname:student.furiname,
                   callname:(!callname)?callname:student.callname,
-                  studentId:(!studentId)?studentId:student.studentId,
+                  studentgId:(!studentId)?studentId:student.studentId,
                   gender:(!gender)?gender:student.gender,
                   birth:(!birth)?birth:student.birth,
                   country:(!country)?country:student.country,
