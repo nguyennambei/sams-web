@@ -66,14 +66,28 @@ export default class Attendance extends React.Component {
     }
     render() {
         const { yearlydata, yearslt,period1,period2,period3,period4}=this.state;
-        console.log(period3)
         let elmitem1= period1.map((item,index)=>{
             return <tr key={index}>
                 <th>{item.studentId}</th>
                 <td>{item.callname}</td>
+                <td><AttendItem att={item.check}/></td>
+            </tr>
+        });
+        let elmitem2= period2.map((item,index)=>{
+            return <tr key={index}>
+                <th>{item.studentId}</th>
+                <td>{item.callname}</td>
+                <td><AttendItem att={item.check}/></td>
             </tr>
         });
         let elmitem3= period3.map((item,index)=>{
+            return <tr key={index}>
+                <th>{item.studentId}</th>
+                <td>{item.callname}</td>
+                <td><AttendItem att={item.check}/></td>
+            </tr>
+        });
+        let elmitem4= period4.map((item,index)=>{
             return <tr key={index}>
                 <th>{item.studentId}</th>
                 <td>{item.callname}</td>
@@ -108,7 +122,6 @@ export default class Attendance extends React.Component {
                         <div className="card-body">
                             <Tabs defaultActiveKey="0">
                                 <Tab eventKey="0" title="1限">
-                                    <h3 className="py-2">1限：プログラミング</h3>
                                     <Table striped bordered size="sm">
                                         <thead>
                                             <tr>
@@ -122,8 +135,7 @@ export default class Attendance extends React.Component {
                                         </tbody>
                                     </Table>
                                 </Tab>                            
-                                <Tab eventKey="2" title="2限">
-                                    <h3>1限：プログラミング</h3>
+                                <Tab eventKey="1" title="2限">
                                     <Table striped bordered size="sm">
                                         <thead>
                                             <tr>
@@ -136,8 +148,7 @@ export default class Attendance extends React.Component {
                                         </tbody>
                                     </Table>
                                 </Tab>                            
-                                <Tab eventKey="3" title="3限">
-                                    <h3>1限：プログラミング</h3>
+                                <Tab eventKey="2" title="3限">
                                     <Table striped bordered size="sm">
                                         <thead>
                                             <tr>
@@ -151,8 +162,7 @@ export default class Attendance extends React.Component {
                                         </tbody>
                                     </Table>
                                 </Tab>                            
-                                <Tab eventKey="4" title="4限">
-                                    <h3>1限：プログラミング</h3>
+                                <Tab eventKey="3" title="4限">
                                     <Table striped bordered size="sm">
                                         <thead>
                                             <tr>
