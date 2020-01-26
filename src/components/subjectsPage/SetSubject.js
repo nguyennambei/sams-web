@@ -19,6 +19,7 @@ export default function SetSubject ({nendo,subjects}){
     const [datestart,setDatestart]=useState('');
     const [dateend,setDateend]=useState('');
     const [checkclass,setCheckclass]=useState(false);
+    const [selectedOption , setSelectedOption ]= useState(0)
 
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
@@ -39,7 +40,7 @@ export default function SetSubject ({nendo,subjects}){
 
     }
     const saveData = () =>{
-        if(datestart===''||dateend===''){
+        if(selectedOption){
             setCheckclass(true)
         }else{
             setCheckclass(false);
@@ -55,6 +56,16 @@ export default function SetSubject ({nendo,subjects}){
             setShow(false)
         }
     }
+    let result = '';
+    if(subjects[0]){
+        result =
+        <tbody>
+            <GenSelection num={0} data={subjects[selectedOption].subjects} handleChoose={getData} />
+            <GenSelection num={1} data={subjects[selectedOption].subjects} handleChoose={getData} />
+            <GenSelection num={2} data={subjects[selectedOption].subjects} handleChoose={getData} />
+            <GenSelection num={3} data={subjects[selectedOption].subjects} handleChoose={getData} />
+        </tbody>
+    }
     return(
         <>
         <div>
@@ -69,15 +80,23 @@ export default function SetSubject ({nendo,subjects}){
                     <h2>{nendo}年度　ー　</h2>
                     <div className="form-group">
                         <label>期間：</label>
-                        <div className="row">
-                            <div className="col-6">
-                                <input type="date" className="form-control" onChange={handleChangeStart} max={dateend}/>
-                                <small className={checkclass ? "showText" : "hiddenText"}>入力して下さい</small>
-                            </div>
-                            <div className="col-6">
-                                <input type="date" className="form-control" onChange={handleChangeEnd} min={datestart}/>
-                                <small className={checkclass ? "showText" : "hiddenText"}>入力して下さい</small>
-                            </div>
+                        <div className="row px-3">
+                        <div className="form-check form-check-inline">
+                            <input className="form-check-input" type="radio" name="nenki" value={0} defaultChecked={selectedOption===0} onChange={e=>setSelectedOption(e.target.value)}/>
+                            <label className="form-check-label" htmlFor="inlineRadio1">1年前期</label>
+                        </div>
+                        <div className="form-check form-check-inline">
+                            <input className="form-check-input" type="radio" name="nenki" value={1} defaultChecked={selectedOption===1} onChange={e=>setSelectedOption(e.target.value)}/>
+                            <label className="form-check-label" htmlFor="inlineRadio1">1年後期</label>
+                        </div>
+                        <div className="form-check form-check-inline">
+                            <input className="form-check-input" type="radio" name="nenki" value={2} defaultChecked={selectedOption===2} onChange={e=>setSelectedOption(e.target.value)}/>
+                            <label className="form-check-label" htmlFor="inlineRadio1">2年前期</label>
+                        </div>
+                        <div className="form-check form-check-inline">
+                            <input className="form-check-input" type="radio" name="nenki" value={3} defaultChecked={selectedOption===3} onChange={e=>setSelectedOption(e.target.value)}/>
+                            <label className="form-check-label" htmlFor="inlineRadio1">2年後期</label>
+                        </div>
                         </div>
                     </div>
                     <table className="table table-bordered w-100">
@@ -93,12 +112,13 @@ export default function SetSubject ({nendo,subjects}){
                             <th>日</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <GenSelection num={0} data={subjects} handleChoose={getData} />
+                        {/* <tbody>
+                            <GenSelection num={0} data={    } handleChoose={getData} />
                             <GenSelection num={1} data={subjects} handleChoose={getData} />
                             <GenSelection num={2} data={subjects} handleChoose={getData} />
                             <GenSelection num={3} data={subjects} handleChoose={getData} />
-                        </tbody>
+                        </tbody> */}
+                        {result}
                     </table>
                     <div className="row float-right mr-3">
                         <div>

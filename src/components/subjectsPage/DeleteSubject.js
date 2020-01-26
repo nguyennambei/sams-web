@@ -2,7 +2,7 @@ import React,{useState} from 'react';
 import {Modal,Button} from 'react-bootstrap';
 import {firebaseApp} from '../firebaseConfig';
 
-export default function DeleteSubject ({nendo,subject}) {
+export default function DeleteSubject ({url,subject}) {
     const [show,setShow] = useState(false);
     const [subjectname, setSubjectname]= useState('');
     const [teachername, setTeachername]= useState('');
@@ -11,7 +11,7 @@ export default function DeleteSubject ({nendo,subject}) {
     const itemRef= firebaseApp.database();
     const deleteData = () =>{
         let keyID = subject.keyID;
-        itemRef.ref('subjectdata').child('year'+nendo).child(keyID).remove();
+        itemRef.ref('subjectdata').child(url+"/"+keyID).remove();
         setShow(false)
     }
     return(
@@ -23,7 +23,7 @@ export default function DeleteSubject ({nendo,subject}) {
         <Modal show={show} onHide={handleClose}>
             <Modal.Body>
                 <div className="container">
-                    <h2>{nendo}年度　ー　科目削除</h2>
+                    <h2>科目削除</h2>
                     <h4>科目名：{subject.name}</h4>
                     <h4>教師名前：{subject.teachername}</h4>
                     <div className="row float-right mr-3">

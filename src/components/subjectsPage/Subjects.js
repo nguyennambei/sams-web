@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {Button, Tabs, Tab} from 'react-bootstrap';
 import { firebaseApp } from '../firebaseConfig';
 import AddSubject from './AddSubject';
@@ -8,6 +8,8 @@ import TableSubmit from './TableSubject';
 import SetSubject from './SetSubject';
 import LessonTable from './LessonTable';
 import SetOneLesson from './SetOneLesson';
+import SubjectsTable from './SubjectsTable';
+import ChangeDate from './ChangeDate';
 
 export default class Subjects extends React.Component {
     constructor(props){
@@ -16,7 +18,8 @@ export default class Subjects extends React.Component {
             yearlydata:[],
             yearslt:{},
             subjectdata:[],
-            lessondata:[]
+            lessondata:[],
+            subjects:[]
         }
         this.database = firebaseApp.database();
     }
@@ -27,11 +30,13 @@ export default class Subjects extends React.Component {
         this.getLessonData(year.year)
     }
     render() {
-        const {yearlydata,yearslt}=this.state;
+        const {yearlydata,yearslt,subjectdata}=this.state;
         let elmyear = yearlydata.map((item,index)=>{
             return <option key={index} value={JSON.stringify(item)}>{item.year}年度</option>
         })
-        
+        let nendo = Math.floor(yearslt.year);
+        const nameki=['1年前期','1年後期','2年前期','2年後期'];
+        console.log(subjectdata)
         return (
             <div>
                 <h1>科目</h1>
@@ -59,7 +64,33 @@ export default class Subjects extends React.Component {
                                     科目
                                 </div>
                                 <div className="card-body">
-                                <AddSubject nendo={this.state.yearslt}/>
+                                    <Tabs defaultActiveKey='0'>
+                                        {subjectdata.map((item,index)=>
+                                            <Tab eventKey={index} key={index} title={nameki[index]}>
+                                                <div className="row my-2">
+                                                <h4 className="col-sm-10">期間：{item.datestart} ~ {item.dateend}</h4>
+                                                    <ChangeDate url={`subjectdata/year${nendo}/${item.keyId}/`} datestart={item.datestart} dateend={item.dateend} />
+                                                </div>
+                                                <div>
+                                                    <AddSubject nendo={nendo} keyId = {item.keyId} title={nameki[index]}/>
+                                                    <table className="mt-3 table table-striped  ">
+                                                        <thead className="thead-inverse">
+                                                            <tr>
+                                                                <th>#</th>
+                                                                <th>科目名</th>
+                                                                <th>教師</th>
+                                                                <th></th>
+                                                            </tr>
+                                                            </thead>
+                                                                {   
+                                                                    <SubjectsTable url={`year${nendo}/${item.keyId}/subjects`} />
+                                                                }
+                                                    </table>
+                                                </div>
+                                            </Tab>
+                                        )}
+                                    </Tabs>
+                                {/* <AddSubject nendo={this.state.yearslt}/>
                                 <table className="table table-striped mt-3">
                                     <thead>
                                         <tr>
@@ -85,7 +116,7 @@ export default class Subjects extends React.Component {
                                     }
                                         
                                     </tbody>
-                                    </table>
+                                    </table> */}
                                 </div>
                             </div>
                         </div>
@@ -95,7 +126,7 @@ export default class Subjects extends React.Component {
 
                               </div>
                               <div className="card-body">
-                                <SetSubject nendo={yearslt.year} subjects = {this.state.subjectdata}/>
+                                <SetSubject nendo={yearslt.year} subjects = {subjectdata}/>
                                 <SetOneLesson nendo={yearslt.year} subjects = {this.state.subjectdata} />
                               </div>
                             </div>
@@ -115,6 +146,7 @@ export default class Subjects extends React.Component {
             let subjectdata = [];
             snaps.forEach(item=>{subjectdata.push(item.val())});
             this.setState({subjectdata})
+            console.log(subjectdata)
         })
     }
     getLessonData = (year)=>{
@@ -122,7 +154,6 @@ export default class Subjects extends React.Component {
             let lessons = [];
             snaps.forEach(item=>{lessons.push(item.val())});
             this.setState({lessondata:lessons})
-            console.log(lessons)
         })
     }
     componentDidMount(){
@@ -132,7 +163,5 @@ export default class Subjects extends React.Component {
             years.sort((x,y)=>(JSON.parse(y.year)-JSON.parse(x.year)));
             this.setState({yearlydata:years,yearslt:years[0]});
         }).then(()=>{this.getSubjectData(this.state.yearslt.year);this.getLessonData(this.state.yearslt.year)});
-
-        
     }
 }

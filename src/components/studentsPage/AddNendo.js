@@ -15,11 +15,28 @@ export default function AddNendo ({yearlydata}) {
             setCheckin(false)
         }else{
             let newKey = firebaseApp.database().ref().push().key;
+            let newKeyS1 = firebaseApp.database().ref().push().key;
+            let newKeyS2 = firebaseApp.database().ref().push().key;
+            let newKeyS3 = firebaseApp.database().ref().push().key;
+            let newKeyS4 = firebaseApp.database().ref().push().key;
             let update = {};
             update['yearlydata/'+newKey]={
                 action:false,keyId:newKey,year:yearly
             }
+            update['subjectdata/year'+yearly+"/"+newKeyS1]={
+                keyId:newKeyS1,datestart:"2020-01-01",dateend:"2020-01-02",id:0,subjects:[]
+            }
+            update['subjectdata/year'+yearly+"/"+newKeyS2]={
+                keyId:newKeyS2,datestart:"2020-01-03",dateend:"2020-01-04",id:1,subjects:[]
+            }
+            update['subjectdata/year'+yearly+"/"+newKeyS3]={
+                keyId:newKeyS3,datestart:"2020-01-05",dateend:"2020-01-06",id:2,subjects:[]
+            }
+            update['subjectdata/year'+yearly+"/"+newKeyS4]={
+                keyId:newKeyS4,datestart:"2020-01-07",dateend:"2020-01-08",id:3,subjects:[]
+            }
             firebaseApp.database().ref().update(update);
+            handleClose();
         }
     }
     let elmcheck = (checkin)?"":<small className="text-danger">年度が入っています　とか　年度が入力してください</small>

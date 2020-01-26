@@ -2,7 +2,7 @@ import React,{useState} from 'react';
 import {Modal,Button} from 'react-bootstrap';
 import {firebaseApp} from '../firebaseConfig';
 
-export default function EditSubject ({nendo,subject}) {
+export default function EditSubject ({url,subject}) {
     const [show,setShow] = useState(false);
     const [subjectname, setSubjectname]= useState('');
     const [teachername, setTeachername]= useState('');
@@ -12,7 +12,7 @@ export default function EditSubject ({nendo,subject}) {
     const saveData = () =>{
         let keyID = subject.keyID;
         let update={};
-        update['/subjectdata/year'+nendo+"/"+keyID]={
+        update["subjectdata/"+url+"/"+keyID]={
             keyID : keyID,
             name:(subjectname==="")?subject.name:subjectname,
             teachername:(teachername==="")?subject.teachername:teachername
@@ -29,7 +29,7 @@ export default function EditSubject ({nendo,subject}) {
         <Modal show={show} onHide={handleClose}>
             <Modal.Body>
                 <div className="container">
-                    <h2>{nendo}年度　ー　科目編集</h2>
+                    <h2>科目編集</h2>
                     <div className="form-group">
                       <label>科目名</label>
                       <input type="text" name="" defaultValue={subject.name} className="form-control"　onChange={(e)=>setSubjectname(e.target.value)}/>

@@ -1,36 +1,58 @@
 import React from 'react';
 import {Button} from 'react-bootstrap';
 import { firebaseApp } from '../firebaseConfig';
+import AttendItem from './AttendItem';
 
 export default class AttendanceRate extends React.Component {
     constructor(props){
         super(props);
         this.state={
             studentlist:[],
-            studentyear:[],
-            data : [],
-            yearslt:new Date().getFullYear()
+            attendancedata : [],
+            yearlydata:[],
+            yearslt:{}
         }
         this.database = firebaseApp.database();
     }
     handleStudentYear = e => {
-        this.setState({yearslt:JSON.parse(e.target.value)});
-        this.getDataStudent(JSON.parse(e.target.value));
+        let year = JSON.parse(e.target.value);
+        this.setState({yearslt:year});
+        this.getStudentData(year);
+        this.getAttendanceData(year)
         
     }
-    getDataStudent = (year) =>{
-        this.database.ref('studentdata').child(`year${year}`).child('students').on('value',snaps=>{
-            let data = []
-            snaps.forEach(item=>{data.push(item.val())})
-            this.setState({data});
-        })
-    }
+    // kqcheck = (check)=>{
+    //     console.log(check)
+    //     let cA = check.filter(item=>item==='A').length;
+    //     let cB = check.filter(item=>item==='B').length;
+    //     let cC = check.filter(item=>item==='C').length;
+    //     return(Math.round(100-(cC/3+cB)*100/check.length))
+    // }
     render() {
-        const {studentlist,studentyear,yearslt,data}=this.state;
-        let elmyear = studentyear.map((item,index)=>{
-            return <option key={index} value={item}>{item}-04</option>
+        const {attendancedata,yearlydata,yearslt,studentlist}=this.state;
+            let elmyear = yearlydata.map((item,index)=>{
+            return <option key={index} value={JSON.stringify(item)}>{item.year}年度</option>
         })
-        
+            let data = [];
+            let result = []
+            let num = 0
+            studentlist.forEach(item=>{
+                data[num]=attendancedata.filter(attend => (attend.studentId === item.studentId));
+                num++
+            })
+            num = 0
+            data.forEach(item=>{
+                result[num]=[]
+                item.forEach(check=>{
+                    result[num].push(check.check)
+                    
+                });num++
+            })
+            let elm =""
+            if(result.length>0){
+            }
+            elm = studentlist.map((item,index)=>{
+            return <AttendItem student = {item} key={index} check ={result[index]} />})
         return (
             <div >
                 <h1>学生情報</h1>
@@ -38,71 +60,50 @@ export default class AttendanceRate extends React.Component {
                 <div className="form-group row">
                     <label className="col-sm-2 col-form-label">学年</label>
                     <div className="col-sm-3">
-                        <select className="form-control" value={yearslt.toString()} onChange={this.handleStudentYear} >
+                        <select className="form-control" defautvalue={yearslt.year} onChange={this.handleStudentYear} >
                             {elmyear}
                         </select>
                     </div>
-                    <div className="col-md-4">
-                        <h3>{yearslt}/04-{yearslt+2}/03</h3>
-                    </div>
                 </div>
-                <hr />
-                    <Button className="mr-3">月</Button>
-                    <Button className="mr-3">半年</Button>
-                    <Button className="mr-3">年</Button>
-                    <Button className="mr-3">2年</Button>
                 <hr />
                 <div className="container">
-                <div className="form-group row">
-                    <label className="col-sm-2 col-form-label">出席率の</label>
-                    <div className="col-sm-3">
-                        <select className="form-control">
-                            <option value={yearslt+'-04'}>{yearslt}-04</option>        
-                            <option value={yearslt+'-05'}>{yearslt}-05</option>        
-                            <option value={yearslt+'-06'}>{yearslt}-06</option>        
-                            <option value={yearslt+'-07'}>{yearslt}-07</option>        
-                            <option value={yearslt+'-08'}>{yearslt}-08</option>        
-                            <option value={yearslt+'-09'}>{yearslt}-09</option>        
-                            <option value={yearslt+'-10'}>{yearslt}-10</option>        
-                            <option value={yearslt+'-11'}>{yearslt}-11</option>        
-                            <option value={yearslt+'-12'}>{yearslt}-12</option>        
-                            <option value={yearslt+1+'-01'}>{yearslt+1}-01</option>        
-                            <option value={yearslt+1+'-02'}>{yearslt+1}-02</option>        
-                            <option value={yearslt+1+'-03'}>{yearslt+1}-03</option>
-                            <option value={yearslt+1+'-04'}>{yearslt+1}-04</option>        
-                            <option value={yearslt+1+'-05'}>{yearslt+1}-05</option>        
-                            <option value={yearslt+1+'-06'}>{yearslt+1}-06</option>        
-                            <option value={yearslt+1+'-07'}>{yearslt+1}-07</option>        
-                            <option value={yearslt+1+'-08'}>{yearslt+1}-08</option>        
-                            <option value={yearslt+1+'-09'}>{yearslt+1}-09</option>        
-                            <option value={yearslt+1+'-10'}>{yearslt+1}-10</option>        
-                            <option value={yearslt+1+'-11'}>{yearslt+1}-11</option>        
-                            <option value={yearslt+1+'-12'}>{yearslt+1}-12</option>        
-                            <option value={yearslt+2+'-01'}>{yearslt+2}-01</option>        
-                            <option value={yearslt+2+'-02'}>{yearslt+2}-02</option>        
-                            <option value={yearslt+2+'-03'}>{yearslt+2}-03</option>                
-                        </select>
-                    </div>
-                </div>
+                    {elm}
                 </div>
             </div>
         )
     }
+    getAttendanceData = (yearslt) =>{
+        this.database.ref('attendancedata').child('year'+yearslt.year).on('value',snaps=>{
+            let attendancedata = [];
+            snaps.forEach(item=>{attendancedata.push(item.val())});
+            this.setState({attendancedata})
+        })
+    }
+    getStudentData = (yearslt) =>{
+        this.database.ref('studentdata').child('year'+yearslt.year).on('value',data=>{
+                let studentlist=[];
+                data.forEach((item)=>{
+                    studentlist.push(item.val());
+                })
+                this.setState({studentlist});
+            });
+    }
+    getSubjectData = (yearslt)=>{
+        this.database.ref('subjectdata').child('year'+yearslt.year).once('value',snaps=>{
+            let subjectdata = [];
+            snaps.forEach(item=>{subjectdata.push(item.val())});
+            this.setState({subjectdata});
+        })
+    }
     componentDidMount(){
-        this.database.ref('student_data').on('value',data=>{
-            let studentlist=[];
-            data.forEach((item,index)=>{
-                studentlist.push(item.val());
-            })
-            this.setState({studentlist});
-        });
-        this.database.ref('studentyear').on('value',snaps=>{
-            let year=[];
-            snaps.forEach(item=>{year.push(item.key)})
-            this.setState({studentyear:year.sort().reverse()})
-            this.setState({yearslt:JSON.parse(year.sort().reverse()[0])})
-            this.getDataStudent(JSON.parse(year.sort().reverse()[0]));
-        });
-        
+        this.database.ref("yearlydata").once('value',snaps=>{
+            let years =[]
+            snaps.forEach(item=>{years.push(item.val())})
+            years.sort((x,y)=>(JSON.parse(y.year)-JSON.parse(x.year)));
+            this.setState({yearlydata:years,yearslt:years[0]});
+            this.getAttendanceData(years[0]);
+            this.getSubjectData(years[0])
+            this.getStudentData(years[0]);
+        })
     }
 }

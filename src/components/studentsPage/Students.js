@@ -27,7 +27,6 @@ export default class Students extends React.Component {
                 studentlist.push(item.val());
             })
             this.setState({studentlist});
-            console.log(studentlist)
         });
     }
     render() {
@@ -65,7 +64,7 @@ export default class Students extends React.Component {
                 <div className="form-group row">
                     <label className="col-sm-2 col-form-label">年度生</label>
                     <div className="col-sm-3">
-                        <select className="form-control" defautValue={yearslt.year} onChange={this.handleStudentYear} >
+                        <select className="form-control" defautvalue={yearslt.year} onChange={this.handleStudentYear} >
                             {elmyear}
                         </select>
                     </div>
@@ -144,7 +143,12 @@ function YearlyDelete({yearly}){
     const handleShow = () => setShow(true);
     const deletedata = () => {
         firebaseApp.database().ref('yearlydata').child(yearly.keyId).remove();
-        setShow(false)
+        firebaseApp.database().ref('attendancedata').child('year'+yearly.year).remove();
+        firebaseApp.database().ref('checkattend').child('year'+yearly.year).remove();
+        firebaseApp.database().ref('studentdata').child('year'+yearly.year).remove();
+        firebaseApp.database().ref('lessondata').child('year'+yearly.year).remove();
+        firebaseApp.database().ref('subjectdata').child('year'+yearly.year).remove();
+        setShow(false);
     }
     return(
         <>

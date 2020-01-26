@@ -62,7 +62,6 @@ export default class Attendance extends React.Component {
         let period3=data.filter((item)=>((item.period===2)&&(this.customDate(item.timelate)===date)));
         let period4=data.filter((item)=>((item.period===3)&&(this.customDate(item.timelate)===date)));
         this.setState({period1,period2,period3,period4})
-
     }
     render() {
         const { yearlydata, yearslt,period1,period2,period3,period4}=this.state;
